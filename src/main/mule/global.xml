@@ -76,6 +76,7 @@ http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/cu
 			<hl7:schema value="/hl7lax/v2_3/ADT_A28.esl" />
 			<hl7:schema value="/hl7lax/v2_3/ADT_A08.esl" />
 		</hl7:schemas>
+		
 	</hl7:config>
 	<configuration doc:name="Error Handler Configuration" doc:id="4229ae20-a275-4999-b4b7-501c7f9f4fbe" defaultErrorHandler-ref="Error_Handler" />
 	<error-handler name="Error_Handler" doc:id="3a7f4e70-7577-438f-a7d6-b0288d30a174" >
