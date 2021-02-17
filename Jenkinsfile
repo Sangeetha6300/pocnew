@@ -12,7 +12,6 @@ pipeline
   bat 'mvn package deploy -DmuleDeploy'
   }
   }
-  
- }
+  }
   
  }
