@@ -1,0 +1,61 @@
+{
+  "configs": [
+    "implementation-v2-3.xml",
+    "global.xml",
+    "common.xml",
+    "hl7-router.xml"
+  ],
+  "secureProperties": [
+    "secure::salesforce.password",
+    "secure::salesforce.consumerSecret",
+    "secure::anypoint.mq.client_secret",
+    "anypoint.platform.client_id",
+    "anypoint.platform.client_secret",
+    "mule.key"
+  ],
+  "redeploymentEnabled": true,
+  "name": "org.mule.examples:hc-accelerator-sfdc-adt-api:1.0.1",
+  "minMuleVersion": "4.3.0",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedPackages": [],
+      "exportedResources": [
+        "application-types.xml",
+        "common.xml",
+        "config/hl7/v2_3/event-message.yaml",
+        "config/properties/config-dev.yaml",
+        "config/properties/config-local.yaml",
+        "config/properties/config-prod.yaml",
+        "dw/compositeRequest.dwl",
+        "dw/hl7/helper.dwl",
+        "dw/hl7/v2_3/Account.dwl",
+        "dw/hl7/v2_3/Acknowledgement.dwl",
+        "dw/hl7/v2_3/EHRParticipant.dwl",
+        "dw/hl7/v2_3/EHRPatient.dwl",
+        "dw/hl7/v2_3/EHRPatientAllergy.dwl",
+        "dw/hl7/v2_3/EHRPatientObservation.dwl",
+        "dw/hl7/v2_3/EHRPatientVisit.dwl",
+        "examples/hl7-adt-a04.json",
+        "examples/hl7-v2_2-adt-a31.json",
+        "examples/sfdc-account-request.json",
+        "examples/sfdc-allergy-info.json",
+        "examples/sfdc-contact-request.json",
+        "examples/sfdc-ehrobservation-request.json",
+        "examples/sfdc-ehrpatient-request.json",
+        "examples/sfdc-participant-info.json",
+        "examples/sfdc-patient-visit-info.json",
+        "global.xml",
+        "hl7-router.xml",
+        "implementation-v2-3.xml",
+        "keystore.p12",
+        "log4j2.xml"
+      ]
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}

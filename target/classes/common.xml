@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+<sub-flow name="common_hl7-duplicate-check" doc:id="ef96ac79-d833-49d5-bcda-02d511003923" >
+<set-variable doc:name="Set Variable sourceSystemId" doc:id="472e9085-dd80-48e7-b52f-1f60a324dadc" variableName="sourceSystemId" value='#[%dw 2.0
+output application/java
+var ID = message.payload.Id
+var PID=message.payload.Data[ID].PID
+---
+(((PID."PID-03"."CX-01")[0]) default ((PID."PID-03"."CM_PAT_ID-01")[0])) default null]' />
+<set-variable value='#[%dw 2.0
+output application/java
+---
+payload.MSH."MSH-10"]' doc:name="Set Variable messageControlNumber" doc:id="621711a1-79a9-4396-b815-8db44c0eb1aa" variableName="messageControlNumber"/>
+<choice doc:name="Check if PersonAccount Record Type Id exists" doc:id="13095aa7-6749-4ff1-8cff-edf160c53115" >
+<when expression="#[vars.contains == true]">
+<ee:transform doc:name="Transform Message" doc:id="32d87a4c-e5b4-4767-97b1-560d71f175da" >
+<ee:message >
+<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+</ee:message>
+</ee:transform>
+
+ </when>
+<otherwise >
+<until-successful maxRetries="${until.successful.maxretries}" doc:name="Until successfully queries " doc:id="2014b775-5158-49dc-ae28-822b3dbcf2ca" millisBetweenRetries="${until.successful.timebetween}">
+<salesforce:query doc:name="Get Person Account RecordTypeId" doc:id="41ced44c-8d63-45d7-9271-d6d6e8e0c6fe" config-ref="Salesforce_Config" target="RecordType" targetValue="#[payload[0].Id]">
+<salesforce:salesforce-query><![CDATA[SELECT
+Description, Id, Name,SobjectType FROM RecordType WHERE IsPersonType=true AND SobjectType='Account' AND Name='Person Accounts' LIMIT 1]]></salesforce:salesforce-query>
+</salesforce:query>
+</until-successful>
+</otherwise>
+</choice>
+<until-successful maxRetries="${until.successful.maxretries}" doc:name="Until query is successful" doc:id="83edbb70-2f85-4e06-830a-1341447a5fa6" millisBetweenRetries="${until.successful.timebetween}">
+<salesforce:query doc:name="Check If Person Account Exists" doc:id="59e646cb-20c1-411d-9d1c-20e46d5975c1" config-ref="Salesforce_Config" target="existingPersonAccountId" targetValue="#[payload[0].Id]">
+<salesforce:salesforce-query><![CDATA[SELECT Id
+FROM Account
+WHERE HealthCloudGA__SourceSystemId__c = ':sourceSystemId' LIMIT 1]]></salesforce:salesforce-query>
+<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+"sourceSystemId" : vars.sourceSystemId
+}]]]></salesforce:parameters>
+</salesforce:query>
+</until-successful>
+<choice doc:name="Check If EHR Patient Exists" doc:id="d7c79b89-10f3-490a-8685-adb970f4be3c">
+<when expression="#[vars.existingPersonAccountId != null]">
+<until-successful maxRetries="5" doc:name="Until query is successful" doc:id="98c53603-ec84-406a-a6d9-719a31d4183a" >
+<salesforce:query doc:name="Check If EHR Patient Exists" doc:id="9ae48f5b-6267-40cf-8108-3424c3c8284d" config-ref="Salesforce_Config" target="existingEHRPatientId" targetValue="#[payload[0].Id]">
+<salesforce:salesforce-query><![CDATA[SELECT Id
+FROM HealthCloudGA__EhrPatient__c
+WHERE HealthCloudGA__Account__c = ':personAccountId' LIMIT 1]]></salesforce:salesforce-query>
+<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+"personAccountId" : vars.existingPersonAccountId
+}]]]></salesforce:parameters>
+</salesforce:query>
+</until-successful>
+</when>
+<otherwise>
+<set-variable value="#[null]" doc:name="Set Variable existingEHRPatientId" doc:id="27a5962d-36a1-4812-b7d1-2236b4fb5ef4" variableName="existingEHRPatientId" />
+</otherwise>
+</choice>
+</sub-flow>
+</mule>

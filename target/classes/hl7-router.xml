@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:mllp="http://www.mulesoft.org/schema/mule/mllp" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/mllp http://www.mulesoft.org/schema/mule/mllp/current/mule-mllp.xsd">
+	<flow name="hl7-router_http-v2-3" doc:id="0b46cb13-1b0d-4e47-ae95-b58e65f6825f" >
+		<http:listener doc:name="/hl7/v2_3" doc:id="a827335e-0eaf-4d0f-8621-c23c5e8f207e" config-ref="HTTP_Listener_config" path="/hl7/v2_3" allowedMethods="POST"/>
+		<flow-ref doc:name="implementation-v2-3_hl7" doc:id="3960bf9f-77b4-40e8-865d-ea7a79be227f" name="implementation-v2-3_hl7" />
+	</flow>
+	<flow name="hl7-router_ping" doc:id="cd5942e8-f896-40b3-a569-2d55feed75fd" >
+		<http:listener doc:name="/ping" doc:id="2e32dfb1-7ca0-4b5f-a895-37abf8233b45" config-ref="HTTP_Listener_config" path="/ping"/>
+		<set-payload value='#[output application/json
+---
+{
+	"timestamp" : now()
+}]' doc:name="Set Ping Response Payload" doc:id="d5ef8c48-cf82-4912-a3f1-52dbf52b0f8b" />
+	</flow>
+</mule>

@@ -1,0 +1,24 @@
+http:
+  host: "0.0.0.0"
+  port: "8081"
+  
+mllp_v2_2:
+  host: "0.0.0.0"
+  port: "8022"
+  
+mllp_v2_3:
+  host: "0.0.0.0"
+  port: "8023"
+
+    
+salesforce:
+  username: "mounish.karandla-wgbc@force.com"
+  consumerKey: "3MVG9fe4g9fhX0E7pow78dTuRuJHJCj8ultqjggSPPqoqprPCGlZ2fSzi4Q.dJKdwymAvLS0Lu4rCOTsSYSz4"
+  consumerSecret: "07218BF4B2BB2E782735CAC8496E2A2408F1212F60E725ECE1378D88DE0932B9"
+  password: "Asdfghjkl12!"
+
+until:
+  successful:
+    maxretries: "3"
+    timebetween: "3000"
+ 
